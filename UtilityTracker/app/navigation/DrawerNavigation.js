@@ -9,8 +9,9 @@ import ReportOutage from '../screens/ReportOutage';
 import FeedbackScreen from '../screens/FeedbackScreen';
 import AboutUsScreen from '../screens/AboutUsScreen';
 import DrawerScreen from '../screens/DrawerScreen';
+import Signout from '../screens/Signout';
 
-import { Ionicons, Octicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, Octicons, FontAwesome5, MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 const Drawer = createDrawerNavigator();
 
@@ -51,31 +52,34 @@ const DrawerNavigation = (props) => {
       </Drawer.Screen> 
       <Drawer.Screen
         name="Outage History"
-        component={OutageHistoryScreen}
         options={{
           drawerIcon: ({color}) => (
             <Octicons name="history" size={20} color={color} />
           ),
         }}
-      />
+      >
+        {(p) => <OutageHistoryScreen model={props.model} onUpdate={props.onUpdate} /> }
+      </Drawer.Screen> 
       <Drawer.Screen
         name="Report Outage"
-        component={ReportOutage}
         options={{
           drawerIcon: ({color}) => (
             <Octicons name="report" size={20} color={color} />
           ),
         }}
-      />
+      >
+        {(p) => <ReportOutage model={props.model} onUpdate={props.onUpdate} /> }
+      </Drawer.Screen>
       <Drawer.Screen
         name="Feedback"
-        component={FeedbackScreen}
         options={{
           drawerIcon: ({color}) => (
             <MaterialIcons  name="dynamic-feed" size={25} color={color} />
           ),
         }}
-      />
+      >
+        {(p) => <FeedbackScreen model={props.model} onUpdate={props.onUpdate} /> }
+      </Drawer.Screen>
       <Drawer.Screen
         name="About us"
         component={AboutUsScreen}
@@ -85,6 +89,16 @@ const DrawerNavigation = (props) => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="Signout"
+        options={{
+          drawerIcon: ({color}) => (
+            <AntDesign name="logout" size={22} color={color} />
+          ),
+        }}
+      >
+        {(p) => <Signout model={props.model} onUpdate={props.onUpdate} /> }
+      </Drawer.Screen> 
     </Drawer.Navigator>
   );
 };

@@ -53,12 +53,12 @@ const HomeScreen = () => {
             </ScrollView>
           </View>
         </View>
-        {/* <View style={styles.btnContainer}>
+        <View style={styles.btnContainer}>
           <CustomButton 
             text='New Schedule Power Interruption' 
             onPress={handleAddModal} 
           />      
-        </View> */}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )

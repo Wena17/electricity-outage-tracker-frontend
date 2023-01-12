@@ -41,15 +41,28 @@ const LoginScreen = (props) => {
         props.model.authToken = json.auth_token
         props.model.id = json.user_id
         props.model.fname = json.fname
+        props.model.technician = json.technician
         props.onUpdate(props.model)
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'Home1',
-            },
-          ],
-        })
+        if(json.technician){
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'ProviderHome',
+              },
+            ],
+          })
+        }
+        else {
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Home1',
+              },
+            ],
+          })
+        }
       }
       else {
         alert(json.message);

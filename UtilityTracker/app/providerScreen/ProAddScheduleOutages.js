@@ -23,8 +23,8 @@ const ProAddScheduleOutages = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [timePicker, setTimePicker] = useState(false);
-  const [startTime, setStartTime] = useState(new Date(Date.now()));  
-  const [endTime, setEndTime] = useState(new Date(Date.now()));
+  const [startTime, setStartTime] = useState(new Date(new Date().setHours(0, 0, 0, 0)));  
+  const [endTime, setEndTime] = useState(new Date(new Date().setHours(0, 0, 0, 0)));
   const [start, setStart] = useState(false);
 
   const [location, setLocation] = useState({
@@ -35,11 +35,12 @@ const ProAddScheduleOutages = (props) => {
     if(start){
       setStartDate(value);
       setStart(false)
-      setDatePicker(false);
+      setTimePicker(false);
     }else{
       setEndDate(value)
-      setDatePicker(false);
+      setTimePicker(false);
     }
+    setDatePicker(false);
   };
 
   function onTimeSelected(event, value) {
@@ -50,7 +51,7 @@ const ProAddScheduleOutages = (props) => {
     }else{
       setEndTime(value)
       setTimePicker(false);
-    }
+    }    
   };
  
   if (route.params?.post != null) {
@@ -72,7 +73,7 @@ const ProAddScheduleOutages = (props) => {
   }
   
   const handleSaveScheduleOutage = () => {
-    //TODO Add new Schedule Outagen in the database
+    console.log("Date: " + endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate() + " Time: " + startTime.getHours()+ ":" + startTime.getMinutes())
     fetch('https://outage-monitor.azurewebsites.net/api/v1/add-schedule-outage', {
       method: 'POST',
       headers: {
@@ -82,10 +83,10 @@ const ProAddScheduleOutages = (props) => {
       body: JSON.stringify({
         authToken: props.model.authToken,
         purpose: purpose,
-        startDate: startDate,
-        startTime: startTime,
-        endDate: endDate,
-        endTime: endTime,
+        startDate: startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate(),
+        startTime: startTime.getHours()+ ":" + startTime.getMinutes(),
+        endDate: endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate(),
+        endTime: endTime.getHours() + ":" + endTime.getMinutes(),
         lat: route.params?.lat,
         long: route.params?.lng,
         location: location.address
@@ -100,9 +101,9 @@ const ProAddScheduleOutages = (props) => {
         CommonActions.reset({
           index: 1,
           routes: [
-            { name: 'Home1' },
+            { name: 'ProviderHome' },
             {
-              name: 'Home1',
+              name: 'ProviderHome',
             },
           ],
           })
@@ -182,7 +183,7 @@ const ProAddScheduleOutages = (props) => {
                     </Pressable>
                   </View>
                   <View style={styles.time}>
-                    <CustomInput value={startTime.toLocaleTimeString('en-PH')} setValue={startTime.toLocaleTimeString('en-PH')} editable={false}></CustomInput>
+                    <CustomInput value={startTime} setValue={startTime} editable={false}></CustomInput>
                     <Pressable onPress={() => { setStart(true); setTimePicker(true); }}>                      
                       <Ionicons name="ios-time-outline" size={35} color="gray" />
                     </Pressable>
@@ -197,7 +198,7 @@ const ProAddScheduleOutages = (props) => {
                     </Pressable>
                   </View>
                   <View style={styles.time}>
-                    <CustomInput value={endTime.toLocaleTimeString('en-PH')} setValue={endTime.toLocaleTimeString('en-PH')} editable={false}></CustomInput>
+                    <CustomInput value={endTime} setValue={endTime} editable={false}></CustomInput>
                     <Pressable onPress={() => { setTimePicker(true) }}>                      
                       <Ionicons name="ios-time-outline" size={35} color="gray" />
                     </Pressable>

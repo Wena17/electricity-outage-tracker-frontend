@@ -37,7 +37,7 @@ const DrawerScreen = (props) => {
               fontSize: 18,
               marginBottom: 5,
             }}>
-            Wena
+            User
           </Text>
           <View style={{flexDirection: 'row'}}>
             <Pressable>
@@ -67,18 +67,6 @@ const DrawerScreen = (props) => {
                 marginLeft: 5,
               }}>
               Tell a Friend
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="exit-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                marginLeft: 5,
-              }}>
-              Sign Out
             </Text>
           </View>
         </TouchableOpacity>

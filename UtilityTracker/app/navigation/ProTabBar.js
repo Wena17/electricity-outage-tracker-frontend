@@ -53,17 +53,19 @@ const TabBar = (props) => {
         )
       }}
       >
-        {(p) => <DrawerNavigation  /> } 
+        {(p) => <DrawerNavigation model={props.model} onUpdate={props.onUpdate} /> } 
       </Tab.Screen>
-      <Tab.Screen name='Notification' component={NotificationScreen} 
+      <Tab.Screen name='Notification'
       options={{
-        tabBarBadge: 3,
+        tabBarBadge: props.model.notifLen != 0 ? props.model.notifLen : '',
         tabBarBadgeStyle: {backgroundColor: '#FA9F42', marginTop: 10},
         tabBarIcon: ({color, size}) => (
           <Ionicons name="ios-notifications-outline" color={color} size={size} />
         ),
       }}
-        />
+      >
+        {(p) => <NotificationScreen model={props.model} onUpdate={props.onUpdate} /> } 
+      </Tab.Screen>
     </Tab.Navigator>
   )
 }

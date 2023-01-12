@@ -1,12 +1,13 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, Dimensions, Button, Text  } from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import Constants from 'expo-constants';
-import ActionSheet from 'react-native-actions-sheet';
+
 
 import { GOOGLE_API_KEY } from '../../environments';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Geocoder from 'react-native-geocoding';
+import { useNavigation, CommonActions} from '@react-navigation/native';
 
 import * as Location from 'expo-location';
 
@@ -16,19 +17,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 Geocoder.init(GOOGLE_API_KEY);
 
 const OutageMapScreen = (props) => {
-  let actionSheet = useRef();
-  var optionArray = [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-    'Option 4',
-    'Cancel'
-  ];
- 
-  const showActionSheet = () => {
-    actionSheet.current.show();
-  };
 
+  const navigation = useNavigation();  
   const [mapRegion, setMapRegion] = useState({
     latitude: 12.606724756594522,
     longitude: 122.92937372268332,
@@ -79,15 +69,45 @@ const OutageMapScreen = (props) => {
     userLocation();
   }, [])
 
+  // const markerPress = () => {
+  //   console.log("Show restoration period details")
+  //   navigation.dispatch(
+  //     CommonActions.reset({
+  //     index: 1,
+  //     routes: [
+  //       { name: 'Home1' },
+  //       {
+  //         name: 'ViewModal',
+  //         params: {itemId: item.id, 
+  //           address: item.address, 
+  //           name: item.name}
+  //       },
+  //     ],
+  //     })
+  //   );
+  // }
 
-  mapMarkers = () => {
+  const mapMarkers = () => {
     return devices.map((device) => <Marker
       key={device.id}
       pinColor={device.outage ? "red" : "green"}
-      onPress={showActionSheet}
+      onPress={() => { if(device.outage) {
+        navigation.dispatch(
+          CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Home1' },
+            {
+              name: 'Restoration',
+              params: {dev_id: device.id, outage: device.outage}
+            },
+          ],
+          })
+        );}
+        else{console.log("No details")}
+      }}
       coordinate={{ latitude: device.lat, longitude: device.lng }}
-      title= 'Device'
-      description= "A very ingeneous device doing beautiful things"
+      title= {'Device: ' + device.id}
       image={device.outage ? require('../assets/outagePin.png') : require('../assets/noOutagePin.png') }
     >
     </Marker >)
@@ -96,31 +116,7 @@ const OutageMapScreen = (props) => {
   return (
     <View style={styles.container}>     
       <MapView style={styles.map} region={mapRegion} >
-        {/* <Marker 
-          coordinate={mapRegion}
-          pinColor="green"
-          draggable={true}
-          onPress={showActionSheet}
-          onDragEnd={(e) => {
-            setMapRegion({
-              latitude: e.nativeEvent.coordinate.latitude,
-              longitude: e.nativeEvent.coordinate.longitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,  
-            })
-            Geocoder.from(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
-              .then(json => {
-                var addressComponent = json.results[7].formatted_address;
-                alert("Current Location" + '\n' + addressComponent);
-              })
-              .catch(error => console.warn(error));
-          }} 
-        >
-          <Callout>
-            <Text>You're here</Text>
-          </Callout>
-        </Marker> */}
-        {mapMarkers()}
+        { mapMarkers() }
       </MapView>
       <View style={styles.searchContainer}>
         <GooglePlacesAutocomplete          
@@ -155,15 +151,9 @@ const OutageMapScreen = (props) => {
             </View>
           )}
         />
+        {/* TODO: Get details of the outage from the database */}
+        
       </View>
-      {/* TODO: Get details of the outage from the database */}
-      <ActionSheet
-          ref={actionSheet}
-          title={'Which one do you like ?'}
-          options={optionArray}
-          cancelButtonIndex={4}
-          destructiveButtonIndex={1}
-        />
     </View>
   )
 }

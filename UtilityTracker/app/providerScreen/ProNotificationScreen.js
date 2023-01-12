@@ -1,20 +1,71 @@
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, Pressable } from 'react-native';
-import React from 'react';
+import { View, Text, SafeAreaView, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native';
+import React, {useState, useEffect} from 'react';
 import CustomNotif from '../components/CustomNotif';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 import { AntDesign } from '@expo/vector-icons';
 
 
-const ProNotificationScreen = () => {
+const ProNotificationScreen = (props) => {
   const navigation = useNavigation();
+  
+  const [notif, setNotif] = useState([])
+  const [refresh, setRefresh] = useState(true)
 
+  useEffect(() => {
+    if(refresh) {
+      fetch('https://outage-monitor.azurewebsites.net/api/v1/notification', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json', 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + props.model.authToken,
+        }
+      })
+      .then((response) => response.json())
+      .then((json) =>{
+        if(json.status == 'success') {
+          setNotif(json.Notif)
+          setRefresh(false)
+          props.model.notifLen = json.Notif.length
+          props.onUpdate(props.model)
+          console.log("Notification: " + json.Notif.length)
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+    }    
+  }, [])
+
+  const renderNotif = (item) => {
+    return (
+      <CustomNotif
+      title={item.title} 
+      info={item.message}            
+      btnText='View'
+      onPress={() => { 
+        navigation.dispatch(
+          CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Home1' },
+            {
+              name: 'NotifView',
+              params: {id: item.id, 
+                title: item.title, 
+                message: item.message}
+            },
+          ],
+          })
+        );
+      }}
+    />
+    )
+  }
   const onMenuIconPressed = () => {
     navigation.navigate('ProviderHome', {screen: 'Home2'})
-  }
-  const onDeletePressed = () => {
-    console.warn('onDeletePressed');
   }
   return (
     <SafeAreaView>
@@ -27,15 +78,21 @@ const ProNotificationScreen = () => {
           </View>
           <Text style={styles.title}>Notification</Text>
         </View>
-        <View>
-        <CustomNotif
-          title='Tittle'
-          info='Outage info'           
-          btnText='View'
-          onPress={onDeletePressed}
-        />   
-        </View>
       </ScrollView>
+      { notif.length === 0 ? 
+        <View style={styles.txtContainer}>
+          <Text style={styles.text}>Empty </Text>
+        </View> : 
+      <FlatList
+        data={notif}
+        renderItem={({item}) => {
+          return renderNotif(item)
+        }}
+        keyExtractor={item => item.id}
+        extraData={notif}
+      />
+      }
+      
     </SafeAreaView>
   )
 };
@@ -52,6 +109,18 @@ const styles = StyleSheet.create({
   },
   userButton: { 
     padding: 10,
+  },
+  txtContainer: {
+    alignSelf: 'center',
+    width: '80%',
+    margin: 5,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "400",
+    textAlign: "center",
+    margin: 5,
+    color: 'gray'
   },
 })
 

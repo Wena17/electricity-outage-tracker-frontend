@@ -20,7 +20,7 @@ const ProDrawerScreen = (props) => {
   const navigation =  useNavigation()
 
   const onEditPressed = () => {
-    navigation.navigate('EditProfile')
+    navigation.navigate('ProEditProfile')
   }
   return (
     <View style={{flex: 1, height: '90%'}}>
@@ -67,18 +67,6 @@ const ProDrawerScreen = (props) => {
                 marginLeft: 5,
               }}>
               Tell a Friend
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="exit-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                marginLeft: 5,
-              }}>
-              Sign Out
             </Text>
           </View>
         </TouchableOpacity>

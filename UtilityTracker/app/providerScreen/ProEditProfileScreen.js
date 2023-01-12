@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Alert, Text, ScrollView, Pressable} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
 import { useTogglePasswordVisibility } from '../components/UseTogglePasswordVisibility';
@@ -23,7 +23,7 @@ const ProEditProfileScreen = (props) => {
   const [passwordRepeat, setPasswordRepeat] = useState('');
 
   const onBackIconPressed = () => {
-    navigation.navigate('Home1', {screen: 'Home2'});
+    navigation.navigate('ProviderHome', {screen: 'Home2'});
   }
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const ProEditProfileScreen = (props) => {
           text: "Cancel",
           onPress: () => {
           setAddModalVisible(() => !isAddModalVisible)
-          navigation.navigate('Home1', {screen: 'Home2'})
+          navigation.navigate('ProviderHome', {screen: 'Home2'})
           }
         },
         { 
@@ -90,9 +90,9 @@ const ProEditProfileScreen = (props) => {
               CommonActions.reset({
               index: 1,
               routes: [
-                { name: 'Home1' },
+                { name: 'ProviderHome' },
                 {
-                  name: 'Home1',
+                  name: 'ProviderHome',
                 },
               ],
               })
@@ -116,11 +116,7 @@ const ProEditProfileScreen = (props) => {
       </View>
       <Text style={styles.title}>Update Profile</Text>
     </View>
-    <View style={styles.container}>      
-      <CustomInput 
-        value={accountID} 
-        setValue={setAccountID}
-      /> 
+    <View style={styles.container}>
       <CustomInput 
         value={firstName} 
         setValue={setFirstName}

@@ -12,6 +12,7 @@ const AlternativePowerSource = (props) => {
 
   const navigation = useNavigation();
   const [data, setData] = useState([])
+  const [nearbyAPS, setNearbyAPS] = useState([])
   const [refresh, setRefresh] = useState(true)
 
   useEffect(() => {
@@ -27,7 +28,6 @@ const AlternativePowerSource = (props) => {
       .then((response) => response.json())
       .then((json) =>{
         if(json.status == 'success') {
-          setRefresh(false)
           setData(json.Posted)
           console.log("Posted: " + JSON.stringify(json.Posted))
         }
@@ -35,8 +35,28 @@ const AlternativePowerSource = (props) => {
       .catch((error) => {
         console.error(error);
       })
-    }
-  }, [])
+      fetch('https://outage-monitor.azurewebsites.net/api/v1/nearby-alternative-ps', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json', 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + props.model.authToken,
+        }
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        if(json.status == 'success') {
+          setRefresh(false)
+          setNearbyAPS(json.Posted)
+          console.log("Nearby: " + JSON.stringify(json.Posted))
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+    }    
+  }, [],[])
+
   const renderData = (item) => {
     return (
       <CustomBox             
@@ -59,7 +79,32 @@ const AlternativePowerSource = (props) => {
           );
         }}
       /> 
-    )}
+    )
+  }
+  const renderNearby = (item) => {
+    return (
+      <CustomBox             
+        text= {item.name}             
+        btnText='View'
+        onPress={() => { 
+          navigation.dispatch(
+            CommonActions.reset({
+            index: 1,
+            routes: [
+              { name: 'Home1' },
+              {
+                name: 'ViewModal',
+                params: {env: 'aps', itemId: item.id, 
+                  address: item.address, 
+                  name: item.name}
+              },
+            ],
+            })
+          );
+        }}
+      /> 
+    )
+  }
   const onMenuIconPressed = () => {
     navigation.openDrawer();
   }
@@ -80,17 +125,24 @@ const AlternativePowerSource = (props) => {
         <Text style={styles.title}>Posted Alternative Power Source</Text>
       </View>
       </ScrollView>
-      <FlatList
-        data={data}
-        renderItem={({item}) => {
-          return renderData(item)
-        }}
-        keyExtractor={item => item.id}
-        extraData={data}
-      />
+      { data.length == 0 ? 
+        <View style={styles.txtContainer}>
+          <Text style={styles.text}>No posted alternative power source </Text>
+          <Text style={styles.text}>Post now!</Text>
+        </View> 
+        :
+        <FlatList
+          data={data}
+          renderItem={({item}) => {
+            return renderData(item)
+          }}
+          keyExtractor={item => item.id}
+          extraData={data}
+        />
+      }
       <View style={styles.addBtnContainer}>
         <CustomButton 
-          text='Add' 
+          text='Post' 
           onPress={onAddPressed} 
         />
       </View>
@@ -98,14 +150,21 @@ const AlternativePowerSource = (props) => {
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Nearby Alternative Power Source</Text>
       </View>
-      <View>
-        <CustomBox             
-            location='Cebu City' 
-            imgSource = {require("../assets/Pinned.png")}             
-            btnText='View'
-          />  
-      </View>
       </ScrollView>
+      { nearbyAPS.length == 0 ? 
+        <View style={styles.txtContainer}>
+          <Text style={styles.text}>No nearby alternative power source </Text>
+        </View>   
+        :
+        <FlatList
+          data={nearbyAPS}
+          renderItem={({item}) => {
+            return renderNearby(item)
+          }}
+          keyExtractor={item => item.id}
+          extraData={nearbyAPS}
+        />
+      }
     </SafeAreaView>
   )
 };
@@ -128,6 +187,18 @@ const styles = StyleSheet.create({
   },
   userButton: { 
     padding: 10,
+  },
+  txtContainer: {
+    alignSelf: 'center',
+    width: '80%',
+    margin: 5,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "400",
+    textAlign: "center",
+    margin: 5,
+    color: 'gray'
   },
 })
 

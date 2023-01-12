@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { useNavigation, useRoute, CommonActions} from '@react-navigation/native';
 import { Modal } from '../components/CustomModal';
 import CustomInput from '../components/CustomInput';
@@ -8,15 +8,27 @@ import CustomButton from '../components/CustomButton';
 const FeedbackScreen = (props) => {
   const navigation = useNavigation();  
   const [isModalVisible, setModalVisible] = useState(true);
-  const route = useRoute();
-  const [disabled, setDisabled] = useState(false);    
-  const [saveDisabled, setSaveDisabled] = useState(true);  
-  const [color, setColor] = useState('');
-  const [nameValue, setValue] = useState('');
+  const [msg, setMsg] = useState('');
   
   const handleSaveFeedback = () => {
-    //TODO Add new pinned location in the database
-    //saveFeedback(nameValue, location.address, props.model.authToken)
+    fetch('https://outage-monitor.azurewebsites.net/api/v1/feedback', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + props.model.authToken,
+      },
+      body: JSON.stringify({
+        message: msg
+      })
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      alert(json.message);
+    })
+    .catch((error) => {
+      console.error(error);
+    })
     setModalVisible(() => !isModalVisible);
     navigation.dispatch(
       CommonActions.reset({
@@ -31,7 +43,6 @@ const FeedbackScreen = (props) => {
     );
   };
   const handleDecline = () => {
-    //TODO inform user that the data will be lost when they click cancel
     
     setModalVisible(() => !isModalVisible);
     navigation.dispatch(
@@ -58,7 +69,7 @@ const FeedbackScreen = (props) => {
                 For better service. Tell us what you think.
               </Text>
               <View style={styles.input}>
-                <CustomInput value={nameValue} setValue={setValue} placeholder='Your Feedback' multiline line={4} />
+                <CustomInput value={msg} setValue={setMsg} placeholder='Your Feedback' multiline line={4} />
                 <View style={styles.separator}  />
               </View>
             </Modal.Body>
@@ -99,26 +110,5 @@ const styles = StyleSheet.create({
   },
 })
 
-// function addFeedback(addName, location, model) {
-//   fetch('https://outage-monitor.azurewebsites.net/api/v1/add-pinned-location', {
-//       method: 'POST',
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({
-//         authToken: model,
-//         name: addName,
-//         address: location,
-//       })
-//     })
-//     .then((response) => response.json())
-//     .then((json) => {
-//       console.log("Add modal screen, pinned locations: " + JSON.stringify(json));
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//     })
-// }
 
 export default FeedbackScreen

@@ -22,6 +22,9 @@ const AboutUsScreen = () => {
           </View>
           <Text style={styles.title}>About Us</Text>
         </View>
+        <View style={styles.txtContainer}>
+          <Text style={styles.txt}>UtilityTracker a mobile application for consumers to notify others of outages in their vicinity, and a crowd-based platform to aggregate notifications in a geographic overview of current outages. Consumer will also be notified of outages near them. </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -39,6 +42,16 @@ const styles = StyleSheet.create({
   },
   userButton: { 
     padding: 10,
+  },
+  txtContainer: {
+    alignSelf: 'center',
+    width: '80%',
+    margin: 5,
+  },  
+  txt: {
+    fontSize: 24,
+    fontWeight: '300',
+    paddingTop: 12,
   },
 })
 

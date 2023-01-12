@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Alert, Text, ScrollView, Pressable} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
 import { useTogglePasswordVisibility } from '../components/UseTogglePasswordVisibility';
@@ -8,19 +8,12 @@ import { useTogglePasswordVisibility } from '../components/UseTogglePasswordVisi
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 const EditProfileScreen = (props) => {
+
   const navigation = useNavigation();
 
-  const [accountID, setAccountID] = useState('Accont ID')
   const [firstName, setFirstName] = useState('First Name');
   const [lastName, setLastName] = useState('Last Name');
   const [phoneNo, setPhoneNo] = useState('0920335502');
-  const [email, setEmail] = useState('');
-  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
-    useTogglePasswordVisibility();
-  const { passwordVerifyVisibility, rightVerifyIcon, handlePasswordVerifyVisibility } =
-  useTogglePasswordVisibility();
-  const [password, setPassword] = useState('');
-  const [passwordRepeat, setPasswordRepeat] = useState('');
 
   const onBackIconPressed = () => {
     navigation.navigate('Home1', {screen: 'Home2'});
@@ -38,7 +31,6 @@ const EditProfileScreen = (props) => {
     .then((response) => response.json())
     .then((json) =>{
       console.log("User: " + JSON.stringify(json));
-      setAccountID(json.consumerAccountID)
       setFirstName(json.firstName)
       setLastName(json.lastName)
       setPhoneNo(json.phoneNo)
@@ -70,7 +62,6 @@ const EditProfileScreen = (props) => {
                 'Authorization': 'Bearer ' + props.model.authToken,
               },
               body: JSON.stringify({
-                consumerAccountID: accountID,
                 firstName: firstName,
                 lastName: lastName,
                 phoneNo: phoneNo,
@@ -116,11 +107,7 @@ const EditProfileScreen = (props) => {
       </View>
       <Text style={styles.title}>Update Profile</Text>
     </View>
-    <View style={styles.container}>      
-      <CustomInput 
-        value={accountID} 
-        setValue={setAccountID}
-      /> 
+    <View style={styles.container}> 
       <CustomInput 
         value={firstName} 
         setValue={setFirstName}

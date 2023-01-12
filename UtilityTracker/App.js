@@ -15,7 +15,7 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
-  const [model, setModel] = useState({authToken: null, id: null, fname: null, pinnedLocations: null, alternativeSource: null, pushToken: null})
+  const [model, setModel] = useState({authToken: null, notifLen: null, id: null, fname: null, technician: null, pinnedLocations: null, alternativeSource: null, pushToken: null})
 
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();

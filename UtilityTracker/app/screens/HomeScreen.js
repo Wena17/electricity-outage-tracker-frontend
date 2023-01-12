@@ -120,14 +120,21 @@ const HomeScreen = (props) => {
         </View>
       </View>
     </ScrollView>
-    <FlatList
-      data={data}
-      renderItem={({item}) => {
-        return renderData(item)
-      }}
-      keyExtractor={item => item.id}
-      extraData={data}
-    />
+    { data.length == 0 ? 
+        <View style={styles.txtContainer}>
+          <Text style={styles.txt}>No pinned location</Text>
+          <Text style={styles.txt}>Add now!</Text>
+        </View> 
+        :
+      <FlatList
+        data={data}
+        renderItem={({item}) => {
+          return renderData(item)
+        }}
+        keyExtractor={item => item.id}
+        extraData={data}
+      />
+      }
     </SafeAreaView>
   )
 };
@@ -175,6 +182,19 @@ const styles = StyleSheet.create({
     width: '100%',    
     borderColor: "grey",
     borderBottomWidth: 2,
+  },
+  
+  txtContainer: {
+    alignSelf: 'center',
+    width: '80%',
+    margin: 5,
+  },
+  txt: {
+    fontSize: 16,
+    fontWeight: "400",
+    textAlign: "center",
+    margin: 5,
+    color: 'gray'
   },
 })
 

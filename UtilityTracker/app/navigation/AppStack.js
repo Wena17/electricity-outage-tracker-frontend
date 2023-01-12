@@ -20,9 +20,13 @@ import SearchLocationScreen from '../screens/SearchLocationScreen';
 import AddModal from '../screens/AddModal';
 import ViewModal from '../screens/ViewModal';
 import ViewAlternativePowerScreen from '../screens/ViewAlternativePowerScreen';
+import RestorationDetails from '../screens/RestoratioDetails';
+import NotifView from '../screens/NotifView';
+import HistoryView from '../screens/HistoryView';
 //Provider screeen
 import ProTabBar from './ProTabBar';
 import ProAddScheduleOutages from '../providerScreen/ProAddScheduleOutages';
+import ProEditProfileScreen from '../providerScreen/ProEditProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -61,11 +65,23 @@ const Navigation = (props) => {
         <Stack.Screen name='EditProfile'>      
           {(p) => <EditProfileScreen model={props.model} onUpdate={props.onUpdate} />}
         </Stack.Screen>
-        <Stack.Screen name='Search' component={SearchLocationScreen}  />
+        <Stack.Screen name='Search' component={SearchLocationScreen}  />        
+        <Stack.Screen name='Restoration' component={RestorationDetails}  />        
+        <Stack.Screen name='NotifView' >
+          {(p) => <NotifView model={props.model} onUpdate={props.onUpdate} />}
+        </Stack.Screen>
+        <Stack.Screen name='HistoryView' >
+          {(p) => <HistoryView model={props.model} onUpdate={props.onUpdate} />}
+        </Stack.Screen>
         
-        <Stack.Screen name='ProviderHome' component={ProTabBar}  />
+        <Stack.Screen name='ProviderHome'>
+          {(p) => <ProTabBar model={props.model} onUpdate={props.onUpdate} />}
+        </Stack.Screen>
         <Stack.Screen name='AddScheduleOutage'> 
           {(p) => <ProAddScheduleOutages model={props.model} onUpdate={props.onUpdate} />}
+        </Stack.Screen>
+        <Stack.Screen name='ProEditProfile'> 
+          {(p) => <ProEditProfileScreen model={props.model} onUpdate={props.onUpdate} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
